@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.dao.PersonDao">
+
+    <sql id="basicSelect">
+      * from person a
+      inner join person_detail b
+      on a.id=b.p_id
+    </sql>
+
+    <sql id="insertAll">
+        insert into
+
+    </sql>
+
+    <insert id="insertPerson" useGeneratedKeys="true" keyProperty="id" parameterType="Person">
+        INSERT INTO person(name,age,country) VALUES(#{name},#{age},#{country})
+    </insert>
+
+    <update id="updatePerson">
+        UPDATE person SET name=#{name},age=#{age},country=#{country} WHERE id=#{id}
+    </update>
+
+    <delete id="deletePerson">
+        DELETE FROM person WHERE id=#{id}
+    </delete>
+
+    <select id="selectPersonById" resultType="Person">
+        select * from person where id = #{id}
+    </select>
+
+    <select id="selectPersonByName" resultType="Person">
+        select * from person where name = #{name}
+    </select>
+
+    <select id="selectPersonByAge" resultType="Person">
+        select * from person where age = #{age}
+    </select>
+
+    <select id="selectPersonBySex" resultType="Person">
+        select <include refid="basicSelect"/> where sex = #{sex}
+    </select>
+
+    <select id="selectAll" resultType="Person">
+        SELECT <include refid="basicSelect"/>
+    </select>
+
+    <select id="selectForeach" resultType="Person">
+        select * from person where age in 
+        <foreach item="item" collection="list" open="(" separator="," close=")">
+        #{item}
+        </foreach>
+    </select>
+
+    <select id="selectIf" resultType="Person" >
+        select * from person where status=1
+        <if test = "country!=''" >
+            and age = #{age}
+        </if>
+    </select>
+
+    <select id="selectChoose" resultType="Person" >
+        select * from person where 1=1
+          <if test="@com.util.StringUtils@isEmpty(name)">and name like '%${name}%'</if>
+          <if test="age!=null">and age like ${age}</if>
+          <if test="@com.util.StringUtils@isEmpty(country)">and country like ${country}</if>
+
+    </select>
+
+</mapper>
